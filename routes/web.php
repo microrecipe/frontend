@@ -3,6 +3,7 @@
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\SignUpController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+URL::forceRootUrl(config('app.url'));
 
 Route::get('/', function () {
     return view('home');
