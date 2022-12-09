@@ -10,6 +10,11 @@
 
 <body>
     <h1>Test dari laravel Frontend</h1>
+    @if ($isLoggedIn)
+        <a href={{ route('auth.signout') }}>Logout</a>
+    @else
+        <a href={{ route('signin') }}>Sign In</a>
+    @endif
 </body>
 
 </html>

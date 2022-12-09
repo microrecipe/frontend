@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\SignUpController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
@@ -18,11 +20,17 @@ use Illuminate\Support\Facades\URL;
 
 URL::forceRootUrl(config('app.url'));
 
-Route::get('/', function () {
-    return view('home');
+Route::get('/', function (Request $request) {
+    $isLoggedIn = $request->session()->get('access_token', null);
+
+    return view('home', ['isLoggedIn' => $isLoggedIn]);
 })->name('home');
 
-Route::get('/sign-in', [SignInController::class, 'index']);
-Route::post('/sign-in', [SignInController::class, 'signIn'])->name('auth.signin');
+Route::get('/sign-in', function () {
+    return view('auth/sign_in');
+})->name('signin');
 
-Route::get('/sign-up', [SignUpController::class, 'index']);
+Route::post('sign-in', [AuthController::class, 'signIn'])->name('auth.signin');
+Route::get('sign-out', [AuthController::class, 'signOut'])->name(('auth.signout'));
+
+// Route::get('/sign-up', [SignUpController::class, 'index']);
