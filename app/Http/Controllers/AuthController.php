@@ -11,6 +11,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        return view('auth/sign_in', ['loginError' => false]);
+    }
     /**
      * Summary of signIn
      * @param Request $request
@@ -32,8 +36,6 @@ class AuthController extends Controller
 
         $request->session()->put('access_token', $authServiceResponse->json('access_token'));
         $request->session()->put('refresh_token', $authServiceResponse->json('refresh_token'));
-
-        Log::debug($request->session()->get('access_token'));
 
         // auth('api')->login(auth('api')->setToken($response->json('access_token'))->user());
 
