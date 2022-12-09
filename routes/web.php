@@ -26,11 +26,17 @@ Route::get('/', function (Request $request) {
     return view('home', ['isLoggedIn' => $isLoggedIn]);
 })->name('home');
 
-Route::get('/sign-in', function () {
-    return view('auth/sign_in');
-})->name('signin');
+Route::prefix('/user')->group(function () {
 
-Route::post('sign-in', [AuthController::class, 'signIn'])->name('auth.signin');
-Route::get('sign-out', [AuthController::class, 'signOut'])->name(('auth.signout'));
+    Route::get(
+        '/sign-in',
+        function () {
+            return view('auth/sign_in', ['loginError' => false]);
+        }
+    )->name('auth.view.signin');
+
+    Route::post('/sign-in', [AuthController::class, 'signIn'])->name('auth.signin');
+    Route::get('/sign-out', [AuthController::class, 'signOut'])->name(('auth.signout'));
+});
 
 // Route::get('/sign-up', [SignUpController::class, 'index']);

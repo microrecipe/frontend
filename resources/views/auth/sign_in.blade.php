@@ -389,6 +389,11 @@
 
 <body>
     <div class="container p-5">
+        @if ($loginError)
+            <div class="alert alert-danger">
+                Error: {{ $loginError }}
+            </div>
+        @endif
         <form class="form-signin" method="POST" action={{ route('auth.signin') }}>
             @csrf
             <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
