@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\SignUpController;
 use App\Http\Middleware\SessionAuth;
@@ -34,8 +35,6 @@ Route::controller(AuthController::class)->prefix('/user')->group(function () {
     Route::get('/sign-out', 'signOut')->name(('auth.signout'));
 });
 
-Route::get('/testing', function () {
-    return view('order/list_cart_items');
-})->middleware(SessionAuth::class);
+Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class);
 
 // Route::get('/sign-up', [SignUpController::class, 'index']);
