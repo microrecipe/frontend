@@ -35,6 +35,6 @@ Route::controller(AuthController::class)->prefix('/user')->group(function () {
     Route::get('/sign-out', 'signOut')->name(('auth.signout'));
 });
 
-Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class);
+Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
 
 // Route::get('/sign-up', [SignUpController::class, 'index']);

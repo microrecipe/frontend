@@ -20,14 +20,24 @@
 
 <body>
     <div class="container">
-        @foreach ($orders as $order)
-            <div class="card" id={{ $order['id'] }}>
-                <div class="card-body">
-                    <p class="card-text">id: {{ $order['id'] }}</p>
-                    <p class="card-text">Total price: {{ $order['total_price'] }}</p>
-                </div>
+        @if (count($orders) > 0)
+            <div class="row align-items-center d-flex justify-content-center">
+                @foreach ($orders as $order)
+                    <div class="card w-100 my-3 shadow" id={{ $order['id'] }}>
+                        <div class="card-body">
+                            <p class="card-text">id: {{ $order['id'] }}</p>
+                            <p class="card-text">Total price: {{ $order['total_price'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
+        @else
+            <div class="row justify-content-center">
+                <h1 class="text-center">
+                    You don't have any orders
+                </h1>
+            </div>
+        @endif
     </div>
 </body>
 
