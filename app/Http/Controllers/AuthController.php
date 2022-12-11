@@ -31,7 +31,7 @@ class AuthController extends Controller
         ]);
 
         if ($authServiceResponse->clientError()) {
-            return view('auth/sign_in', ['loginError' => $authServiceResponse->json('message')]);
+            return view('auth.sign_in', ['loginError' => $authServiceResponse->json('message')]);
         }
 
         $request->session()->put('access_token', $authServiceResponse->json('access_token'));
