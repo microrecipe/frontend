@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\SignInController;
-use App\Http\Controllers\SignUpController;
+use App\Http\Controllers\RecipeController;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +34,13 @@ Route::controller(AuthController::class)->prefix('/user')->group(function () {
     Route::get('/sign-out', 'signOut')->name(('auth.signout'));
 });
 
-Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
+Route::controller(OrderController::class)->prefix('/user/orders')->group(function () {
+    Route::get('', 'index')->name('orders.view.orders');
+})->middleware(SessionAuth::class);
+
+Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
+    Route::get('', 'index')->name('recipes.view.recipes');
+});
+// Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
 
 // Route::get('/sign-up', [SignUpController::class, 'index']);

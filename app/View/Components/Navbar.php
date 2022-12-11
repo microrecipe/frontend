@@ -8,15 +8,17 @@ use Illuminate\View\Component;
 
 class Navbar extends Component
 {
-    public $isLoggedIn;
+    private $isLoggedIn;
+    private $activePage;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($isLoggedIn)
+    public function __construct($isLoggedIn, $activePage = null)
     {
         $this->isLoggedIn = $isLoggedIn;
+        $this->activePage = $activePage;
     }
 
     /**
@@ -26,6 +28,6 @@ class Navbar extends Component
      */
     public function render()
     {
-        return view('components.navbar', ['isLoggedIn' => $this->isLoggedIn]);
+        return view('components.navbar', ['isLoggedIn' => $this->isLoggedIn, 'activePage' => $this->activePage]);
     }
 }

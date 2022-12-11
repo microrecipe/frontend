@@ -2,13 +2,10 @@
 
 namespace App;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class Api
 {
@@ -20,12 +17,15 @@ class Api
 
   private $authBaseUrl;
 
+  private $recipeBaseUrl;
+
   public function __construct($accessToken, $refreshToken)
   {
     $this->accessToken = $accessToken;
     $this->refreshToken = $refreshToken;
     $this->orderBaseUrl = "http://" . env('ORDER_HOST', 'order') . ":" . env('ORDER_REST_PORT', '80') . "/orders";
     $this->authBaseUrl = "http://" . env('AUTH_HOST', 'auth') . ":" . env('AUTH_REST_PORT', '80') . "/auth";
+    $this->recipeBaseUrl = "http://" . env('RECIPE_HOST', 'recipe') . ":" . env('RECIPE_REST_PORT', '80') . "/recipes";
   }
 
   private function refreshAccessToken(Request $request)
@@ -43,6 +43,8 @@ class Api
     $this->accessToken = $refresh->json('access_token');
   }
 
+  // Orders API
+
   public function listOrder(Request $request)
   {
     $orders = Http::withToken($this->accessToken)->get($this->orderBaseUrl . "/");
@@ -58,5 +60,12 @@ class Api
     }
 
     return $orders;
+  }
+
+  // Recipe API
+
+  public function listRecipes()
+  {
+    return Http::get($this->recipeBaseUrl);
   }
 }

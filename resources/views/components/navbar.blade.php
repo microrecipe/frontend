@@ -1,16 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <a class="navbar-brand" href={{ env('FRONTEND_APP_URL') }}>Microrecipe</a>
 
     <div class="collapse navbar-collapse align-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="">Recipes</a>
+                <a class="nav-link {{ $activePage === 'recipe' ? 'active' : '' }}"
+                    href={{ route('recipes.view.recipes') }}>Recipes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="">Ingredients</a>
+                <a class="nav-link {{ $activePage === 'ingredient' ? 'active' : '' }}" href="">Ingredients</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="">Nutritions</a>
+                <a class="nav-link {{ $activePage === 'nutrition' ? 'active' : '' }}" href="">Nutritions</a>
             </li>
         </ul>
         <div class="d-flex ml-auto">
