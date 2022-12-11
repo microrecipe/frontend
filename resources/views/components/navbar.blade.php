@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Microrecipe</a>
+    <a class="navbar-brand" href={{ env('FRONTEND_APP_URL') }}>Microrecipe</a>
 
     <div class="collapse navbar-collapse align-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
@@ -32,7 +32,7 @@
                         </svg>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right mt-2">
-                        <li><a class="dropdown-item" href="#">Orders</a></li>
+                        <li><a class="dropdown-item" href={{ route('orders.view.orders') }}>Orders</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

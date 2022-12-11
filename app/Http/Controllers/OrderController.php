@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class OrderController extends Controller
 {
@@ -28,7 +27,7 @@ class OrderController extends Controller
 
       $orders = $api->listOrder($request);
 
-      return view('order/list_orders', ['orders' => $orders->json(), 'isLoggedIn' => $this->getAccessToken($request)]);
+      return view('order.list_orders', ['orders' => $orders->json(), 'isLoggedIn' => $this->getAccessToken($request)]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
