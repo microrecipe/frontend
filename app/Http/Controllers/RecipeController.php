@@ -38,8 +38,6 @@ class RecipeController extends Controller
 
         $recipes = $api->listRecipes();
 
-        abort_if($recipes->failed(), $recipes->status());
-
-        return view('recipe.list_recipes', ['isLoggedIn' => $this->getAccessToken($request), 'recipes' => $recipes->json()]);
+        return view('recipe.list_recipes', ['isLoggedIn' => $this->getAccessToken($request), 'recipes' => $recipes]);
     }
 }

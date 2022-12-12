@@ -17,15 +17,24 @@
             <div class="row align-items-center d-flex justify-content-center mx-3">
                 @foreach ($recipes as $recipe)
                     <div class="card w-100 my-3 shadow" id={{ $recipe['id'] }}>
-                        <div class="card-body">
-                            <p class="card-text d-block">Name: {{ $recipe['name'] }}</p>
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h3 class="card-text d-block">{{ $recipe['name'] }}</h3>
                             <div class="d-flex flex-row justify-content-center">
-                                <p class="mr-3">Ingredients:</p>
-                                <ul class="list-group w-100">
+                                <ul class="list-group w-100 accordion accordion-flush">
                                     @foreach ($recipe['ingredients'] as $ingredient)
-                                        <li class="list-group-item position-relative" id={{ $ingredient['id'] }}>
+                                        <li class="list-group-item position-relative accordion-item"
+                                            id={{ $ingredient['id'] }}>
+                                            {{-- <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                                {{ $ingredient['name'] }}
+                                            </button> --}}
                                             <div class="d-flex flex-row justify-content-between align-items-center">
-                                                <p class="m-0">{{ $ingredient['name'] }}</p>
+                                                <a href="#" class="m-0 accordion-button stretched-link"
+                                                    role="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse-{{ $ingredient['id'] }}"
+                                                    aria-controls="collapseOne">
+                                                    {{ $ingredient['name'] }}</a>
                                                 <div class="d-flex flex-column justify-content-end">
                                                     <p class="m-0">Quantity: {{ $ingredient['quantity'] }}
                                                         {{ $ingredient['unit'] }}
@@ -35,10 +44,29 @@
                                             </div>
                                             {{-- <a href="" class="stretched-link invinsible"></a> --}}
                                         </li>
+                                        <div id="collapse-{{ $ingredient['id'] }}" class="accordion-collapse collapse"
+                                            data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <div class="card d-flex flex-row justify-content-between p-3">
+                                                    <p class="mr-5">Nutrition facts:</p>
+                                                    <ul class="list-group w-50">
+                                                        @foreach ($ingredient['nutritions'] as $nutrition)
+                                                            <li class="list-group-item">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <p>{{ $nutrition['name'] }}:</p>
+                                                                    <p>{{ $nutrition['per_gram'] }} per gram</p>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </ul>
+
                             </div>
-                            <button class="btn btn-success w-100 mt-2 ml-auto">
+                            <button class="btn btn-success w-50 mt-3 mx-auto">
                                 Add ingredients to cart
                             </button>
                         </div>

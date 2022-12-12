@@ -66,6 +66,10 @@ class Api
 
   public function listRecipes()
   {
-    return Http::get($this->recipeBaseUrl);
+    $recipes = Http::get($this->recipeBaseUrl);
+
+    abort_if($recipes->failed(), $recipes->status());
+
+    return $recipes->json();
   }
 }
