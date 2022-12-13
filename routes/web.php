@@ -40,6 +40,9 @@ Route::controller(OrderController::class)->prefix('/user/orders')->group(functio
 
 Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
     Route::get('', 'index')->name('recipes.view.recipes');
+    Route::get('/add', 'viewAddRecipe')->name('recipes.view.add_recipe')->middleware(SessionAuth::class);
+
+    Route::post('/add', 'addRecipe')->name('recipes.add_recipe')->middleware(SessionAuth::class);
 });
 // Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
 

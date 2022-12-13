@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RecipeController extends Controller
 {
@@ -39,5 +40,41 @@ class RecipeController extends Controller
         $recipes = $api->listRecipes();
 
         return view('recipe.list_recipes', ['isLoggedIn' => $this->getAccessToken($request), 'recipes' => $recipes]);
+    }
+
+    public function viewAddRecipe(Request $request)
+    {
+        $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+        $ingredients = $api->listIngredients();
+
+        return view('recipe.add_recipe', ['isLoggedIn' => $this->getAccessToken($request), 'ingredients' => $ingredients, 'noIngredientSelected' => false]);
+    }
+
+    public function addRecipe(Request $request)
+    {
+        $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+        $inputs = $request->input();
+        $name = $request->input('name');
+        $ingredientsInput = array();
+
+        foreach ($inputs as $key => $quantity) {
+            if (gettype($key) === 'integer') {
+                if (+$quantity > 0) {
+                    array_push($ingredientsInput, ['id' => $key, 'quantity' => $quantity]);
+                }
+            }
+        }
+
+        if (count($ingredientsInput) < 1) {
+            $ingredients = $api->listIngredients();
+
+            return view('recipe.add_recipe', ['isLoggedIn' => $this->getAccessToken($request), 'ingredients' => $ingredients, 'noIngredientSelected' => true]);
+        }
+
+        $api->addRecipe($request, $name, $ingredientsInput);
+
+        return redirect()->route('recipes.view.recipes');
     }
 }

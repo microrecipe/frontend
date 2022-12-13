@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class SessionAuth
 {
@@ -17,7 +16,7 @@ class SessionAuth
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->session()->get('access_token')) {
+        if (is_null($request->session()->get('access_token', null))) {
             return redirect()->route('auth.view.signin');
         }
 

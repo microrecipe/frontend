@@ -19,6 +19,10 @@ class Api
 
   private $recipeBaseUrl;
 
+  private $ingredientBaseUrl;
+
+  private $nutritionBaseUrl;
+
   public function __construct($accessToken, $refreshToken)
   {
     $this->accessToken = $accessToken;
@@ -26,6 +30,8 @@ class Api
     $this->orderBaseUrl = "http://" . env('ORDER_HOST', 'order') . ":" . env('ORDER_REST_PORT', '80') . "/orders";
     $this->authBaseUrl = "http://" . env('AUTH_HOST', 'auth') . ":" . env('AUTH_REST_PORT', '80') . "/auth";
     $this->recipeBaseUrl = "http://" . env('RECIPE_HOST', 'recipe') . ":" . env('RECIPE_REST_PORT', '80') . "/recipes";
+    $this->ingredientBaseUrl = "http://" . env('INGREDIENT_HOST', 'ingredient') . ":" . env('INGREDIENT_REST_PORT', '80') . "/ingredients";
+    $this->nutritionBaseUrl = "http://" . env('NUTRITION_HOST', 'nutrition') . ":" . env('NUTRITION_REST_PORT', '80') . "/nutritions";
   }
 
   private function refreshAccessToken(Request $request)
@@ -71,5 +77,35 @@ class Api
     abort_if($recipes->failed(), $recipes->status());
 
     return $recipes->json();
+  }
+
+  public function addRecipe(Request $request, $name, $ingredients)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->post($this->recipeBaseUrl, [
+      'name' => $name,
+      'ingredients' => $ingredients
+    ]);
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->listOrder($request);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
+  // Ingredient API
+
+  public function listIngredients()
+  {
+    $ingredients = Http::get($this->ingredientBaseUrl);
+
+    abort_if($ingredients->failed(), $ingredients->status());
+
+    return $ingredients->json();
   }
 }
