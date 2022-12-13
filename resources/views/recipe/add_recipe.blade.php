@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <x-navbar :is-logged-in="$isLoggedIn" active-page='recipe' />
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" active-page='recipe' :cart-items-count="$cartItemsCount" />
     <div class="container-fluid p-3">
         @if ($noIngredientSelected)
             <div class="alert alert-danger" role="alert">

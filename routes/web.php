@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Middleware\SessionAuth;
@@ -21,11 +22,9 @@ use Illuminate\Support\Facades\URL;
 
 URL::forceRootUrl(config('app.url'));
 
-Route::get('/', function (Request $request) {
-    $isLoggedIn = $request->session()->get('access_token', null);
-
-    return view('home', ['isLoggedIn' => $isLoggedIn]);
-})->name('home');
+Route::controller(HomeController::class)->prefix('/')->group(function () {
+    Route::get('', 'index')->name('home');
+});
 
 Route::controller(AuthController::class)->prefix('/user')->group(function () {
     Route::get('/sign-in', 'index')->name('auth.view.signin');

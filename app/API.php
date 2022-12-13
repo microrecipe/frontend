@@ -42,6 +42,10 @@ class Api
     ]);
 
     if ($refresh->failed()) {
+      Log::debug($refresh);
+
+      $request->session()->forget('access_token');
+      $request->session()->forget('refresh_token');
       throw new UnauthorizedException('error');
     }
 
@@ -66,6 +70,38 @@ class Api
     }
 
     return $orders;
+  }
+
+  public function listItemsInCart(Request $request)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->get($this->orderBaseUrl . "/carts");
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->listOrder($request);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
+  public function countItemsIncart(Request $request)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->get($this->orderBaseUrl . "/carts/count");
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->listOrder($request);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
   }
 
   // Recipe API

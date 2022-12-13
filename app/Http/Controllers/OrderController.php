@@ -27,7 +27,7 @@ class OrderController extends Controller
 
       $orders = $api->listOrder($request);
 
-      return view('order.list_orders', ['orders' => $orders->json(), 'isLoggedIn' => $this->getAccessToken($request)]);
+      return view('order. ', ['orders' => $orders->json(), 'accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request)]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {

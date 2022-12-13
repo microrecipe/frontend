@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <x-navbar :is-logged-in="$isLoggedIn" />
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" />
     <div class="container">
         @if (count($orders) > 0)
             <div class="row align-items-center d-flex justify-content-center">

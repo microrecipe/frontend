@@ -11,9 +11,9 @@
 </head>
 
 <body>
-    <x-navbar :is-logged-in="$isLoggedIn" active-page="recipe" />
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" active-page="recipe" :cart-items-count="$cartItemsCount" />
     <div class="container-fluid p-3">
-        @if (!is_null($isLoggedIn))
+        @if (!is_null($accessToken))
             <div class="d-flex justify-content-between mx-3">
                 <div class=""></div>
                 <a href={{ route('recipes.view.add_recipe') }} class="btn btn-primary">
@@ -72,7 +72,7 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            @if (!is_null($isLoggedIn))
+                            @if (!is_null($accessToken))
                                 <button class="btn btn-success w-50 mt-3 mx-auto">
                                     Add ingredients to cart
                                 </button>
