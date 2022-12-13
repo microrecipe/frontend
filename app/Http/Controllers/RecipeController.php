@@ -52,7 +52,7 @@ class RecipeController extends Controller
             }
         }
 
-        return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart]);
+        return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => null]);
     }
 
     public function viewAddRecipe(Request $request)
@@ -98,6 +98,36 @@ class RecipeController extends Controller
             $api->addRecipe($request, $name, $ingredientsInput);
 
             return redirect()->route('recipes.view.recipes');
+        } catch (UnauthorizedException $err) {
+            return redirect()->route('auth.view.signin');
+        } catch (\Exception $e) {
+            Log::debug($e);
+            abort($e->getCode());
+        }
+    }
+
+    public function addIngredientsToCart(Request $request, $recipeId)
+    {
+        try {
+            $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+            $api->addIngredientsToCart($request, $recipeId);
+
+            $recipes = $api->listRecipes();
+            $itemsInCart = 0;
+
+            if (!is_null($this->getAccessToken($request))) {
+                try {
+                    $itemsInCart = $api->countItemsIncart($request);
+                } catch (UnauthorizedException $err) {
+                    return redirect()->route('auth.view.signin');
+                } catch (\Exception $e) {
+                    Log::debug($e);
+                    abort($e->getCode());
+                }
+            }
+
+            return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => 'success']);
         } catch (UnauthorizedException $err) {
             return redirect()->route('auth.view.signin');
         } catch (\Exception $e) {

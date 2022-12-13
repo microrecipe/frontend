@@ -35,6 +35,7 @@ Route::controller(AuthController::class)->prefix('/user')->group(function () {
 
 Route::controller(OrderController::class)->prefix('/user/orders')->group(function () {
     Route::get('', 'index')->name('orders.view.orders');
+    Route::get('/cart', 'listItemsInCart')->name('orders.view.cart');
 })->middleware(SessionAuth::class);
 
 Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
@@ -42,7 +43,9 @@ Route::controller(RecipeController::class)->prefix('/main/recipes')->group(funct
     Route::get('/add', 'viewAddRecipe')->name('recipes.view.add_recipe')->middleware(SessionAuth::class);
 
     Route::post('/add', 'addRecipe')->name('recipes.add_recipe')->middleware(SessionAuth::class);
+    Route::post('/add-to-cart/{recipeId}', 'addIngredientsToCart')->name('recipes.add_to_cart')->middleware(SessionAuth::class);
 });
+
 // Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
 
 // Route::get('/sign-up', [SignUpController::class, 'index']);

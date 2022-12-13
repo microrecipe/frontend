@@ -26,8 +26,26 @@ class OrderController extends Controller
       $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
 
       $orders = $api->listOrder($request);
+      $itemsInCart = $api->countItemsIncart($request);
 
-      return view('order. ', ['orders' => $orders->json(), 'accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request)]);
+      return view('order', ['orders' => $orders->json(), 'accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart]);
+    } catch (UnauthorizedException $th) {
+      return redirect()->route('auth.view.signin');
+    } catch (\Exception $e) {
+      Log::debug($e->getMessage());
+      abort(400);
+    }
+  }
+
+  public function listItemsInCart(Request $request)
+  {
+    try {
+      $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+      $cartItems = $api->listItemsInCart($request);
+      $itemsInCart = $api->countItemsIncart($request);
+
+      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {

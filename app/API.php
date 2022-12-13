@@ -79,7 +79,7 @@ class Api
     if ($apiResponse->failed()) {
       if ($apiResponse->json('message') == 'Token expired') {
         $this->refreshAccessToken($request);
-        return $this->listOrder($request);
+        return $this->listItemsInCart($request);
       } else {
         abort($apiResponse->failed(), $apiResponse->status());
       }
@@ -95,7 +95,23 @@ class Api
     if ($apiResponse->failed()) {
       if ($apiResponse->json('message') == 'Token expired') {
         $this->refreshAccessToken($request);
-        return $this->listOrder($request);
+        return $this->countItemsIncart($request);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
+  public function addIngredientsToCart(Request $request, $recipeId)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->post($this->orderBaseUrl . "/carts/recipes/" . $recipeId);
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->addIngredientsToCart($request, $recipeId);
       } else {
         abort($apiResponse->failed(), $apiResponse->status());
       }
@@ -125,7 +141,7 @@ class Api
     if ($apiResponse->failed()) {
       if ($apiResponse->json('message') == 'Token expired') {
         $this->refreshAccessToken($request);
-        return $this->listOrder($request);
+        return $this->addRecipe($request, $name, $ingredients);
       } else {
         abort($apiResponse->failed(), $apiResponse->status());
       }
