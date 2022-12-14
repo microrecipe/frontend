@@ -52,7 +52,7 @@ class RecipeController extends Controller
             }
         }
 
-        return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => null]);
+        return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => session('addToCartAlert', null)]);
     }
 
     public function viewAddRecipe(Request $request)
@@ -127,7 +127,7 @@ class RecipeController extends Controller
                 }
             }
 
-            return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => 'success']);
+            return redirect('/main/recipes')->with(['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => 'success']);
         } catch (UnauthorizedException $err) {
             return redirect()->route('auth.view.signin');
         } catch (\Exception $e) {

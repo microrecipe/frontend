@@ -16,7 +16,7 @@
     </header>
     <main>
         <div class="container-fluid p-3">
-            <div class="row justify-content-center">
+            <div class="d-flex row justify-content-between align-items-start p-3">
                 @foreach ($cartItems as $key => $item)
                     <div class="col-md-8 col-12 card w-50 mb-3" id={{ $key }}>
                         <div class="card-body">
@@ -27,8 +27,14 @@
                             <p class="card-text">Quantity: {{ $item['quantity'] }}</p>
                         </div>
                     </div>
+                    @if ($key < 1)
+                        <div class="col-md-4 col-12 mb-3 align-top align-items-center">
+                            <h3 class="mb-3">Total price</h3>
+                            <h4 class="mb-3">Rp.{{ $totalPrice }}</h4>
+                            <a href={{ route('orders.view.cart.checkout') }} class="btn btn-success w-100">Buy</a>
+                        </div>
+                    @endif
                 @endforeach
-                <a href="" class="btn btn-primary col-md-8 col-12 w-50 mb-3">Buy</a>
             </div>
         </div>
     </main>

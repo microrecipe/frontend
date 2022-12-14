@@ -33,7 +33,7 @@ class OrderController extends Controller
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
       Log::debug($e->getMessage());
-      abort(400);
+      abort($e->getCode());
     }
   }
 
@@ -44,13 +44,32 @@ class OrderController extends Controller
 
       $cartItems = $api->listItemsInCart($request);
       $itemsInCart = $api->countItemsIncart($request);
+      $totalPrice = array_reduce($cartItems, function ($a, $b) {
+        return $a + ($b['price'] * $b['quantity']);
+      }, 0);
 
-      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems]);
+      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
       Log::debug($e->getMessage());
-      abort(400);
+      abort($e->getCode());
+    }
+  }
+
+  public function checkout(Request $request)
+  {
+    try {
+      $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+      $itemsInCart = $api->countItemsIncart($request);
+
+      return view('order.checkout', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart]);
+    } catch (UnauthorizedException $th) {
+      return redirect()->route('auth.view.signin');
+    } catch (\Exception $e) {
+      Log::debug($e->getMessage());
+      abort($e->getCode());
     }
   }
 }

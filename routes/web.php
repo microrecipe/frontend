@@ -36,6 +36,7 @@ Route::controller(AuthController::class)->prefix('/user')->group(function () {
 Route::controller(OrderController::class)->prefix('/user/orders')->group(function () {
     Route::get('', 'index')->name('orders.view.orders');
     Route::get('/cart', 'listItemsInCart')->name('orders.view.cart');
+    Route::get('/cart/checkout', 'checkout')->name('orders.view.cart.checkout');
 })->middleware(SessionAuth::class);
 
 Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
