@@ -11,16 +11,39 @@
 </head>
 
 <body>
-    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" />
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" :cart-items-count="$cartItemsCount" />
     <main>
-        <div class="container">
+        <div class="container-fluid p-3">
+            <div class="row">
+                <h1>Transaction History</h1>
+            </div>
             @if (count($orders) > 0)
                 <div class="row align-items-center d-flex justify-content-center">
                     @foreach ($orders as $order)
-                        <div class="card w-100 my-3 shadow" id={{ $order['id'] }}>
-                            <div class="card-body">
-                                <p class="card-text">id: {{ $order['id'] }}</p>
-                                <p class="card-text">Total price: {{ $order['total_price'] }}</p>
+                        <div class="col col-12">
+                            <div class="card w-100 my-3 shadow" id={{ $order['id'] }}>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        {{ is_null($order['placed_at']) ? '' : \Carbon\Carbon::parse($order['placed_at'])->toDayDateTimeString() }}
+                                    </p>
+                                    <p class="card-text">Items:
+                                    <ul class="list-group align-middle">
+                                        @if (count($order['items']) > 0)
+                                            @foreach ($order['items'] as $item)
+                                                <li class="list-group-item">
+                                                    <p>Item name: {{ $item['ingredient']['name'] }}</p>
+                                                    <p>Price: Rp.{{ $item['price'] }} x {{ $item['quantity'] }}</p>
+                                                </li>
+                                            @endforeach
+                                        @endif
+                                    </ul>
+                                    </p>
+                                    <p class="card-text">Order status:
+                                        <span
+                                            class="rounded-pill {{ is_null($order['status']) ? '' : ($order['status'] === 'finished' ? 'text-bg-success' : 'text-bg-primary') }} py-0 px-2">{{ is_null($order['status']) ? '' : ucfirst($order['status']) }}</span>
+                                    </p>
+                                    <p class="card-text">Total price: Rp.{{ $order['total_price'] }}</p>
+                                </div>
                             </div>
                         </div>
                     @endforeach

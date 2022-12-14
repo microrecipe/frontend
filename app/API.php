@@ -23,6 +23,10 @@ class Api
 
   private $nutritionBaseUrl;
 
+  private $paymentBaseUrl;
+
+  private $deliveryBaseUrl;
+
   public function __construct($accessToken, $refreshToken)
   {
     $this->accessToken = $accessToken;
@@ -32,6 +36,8 @@ class Api
     $this->recipeBaseUrl = "http://" . env('RECIPE_HOST', 'recipe') . ":" . env('RECIPE_REST_PORT', '80') . "/recipes";
     $this->ingredientBaseUrl = "http://" . env('INGREDIENT_HOST', 'ingredient') . ":" . env('INGREDIENT_REST_PORT', '80') . "/ingredients";
     $this->nutritionBaseUrl = "http://" . env('NUTRITION_HOST', 'nutrition') . ":" . env('NUTRITION_REST_PORT', '80') . "/nutritions";
+    $this->paymentBaseUrl = "http://" . env('PAYMENT_HOST', 'payment') . ":" . env('PAYMENT_REST_PORT', '80') . "/payments";
+    $this->deliveryBaseUrl = "http://" . env('DELIVERY_HOST', 'delivery') . ":" . env('DELIVERY_REST_PORT', '80') . "/deliveries";
   }
 
   private function refreshAccessToken(Request $request)
@@ -136,6 +142,22 @@ class Api
     return $apiResponse->json();
   }
 
+  public function checkout(Request $request, $address, $paymentId, $courierId)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->post($this->orderBaseUrl . "/checkout", ['address' => $address, 'payment_id' => $paymentId, 'delivery_courier_id' => $courierId]);
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->checkout($request, $address, $paymentId, $courierId);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
   // Recipe API
 
   public function listRecipes()
@@ -175,5 +197,27 @@ class Api
     abort_if($ingredients->failed(), $ingredients->status());
 
     return $ingredients->json();
+  }
+
+  // Delivery API
+
+  public function listDeliveryCouriers()
+  {
+    $apiResponse = Http::get($this->deliveryBaseUrl . "/couriers");
+
+    abort_if($apiResponse->failed(), $apiResponse->status());
+
+    return $apiResponse->json();
+  }
+
+  // Payment API
+
+  public function listPaymentMethods()
+  {
+    $apiResponse = Http::get($this->paymentBaseUrl . "/payment-methods");
+
+    abort_if($apiResponse->failed(), $apiResponse->status());
+
+    return $apiResponse->json();
   }
 }

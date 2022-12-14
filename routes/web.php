@@ -39,6 +39,7 @@ Route::controller(OrderController::class)->prefix('/user/orders')->group(functio
     Route::get('/cart/checkout', 'checkout')->name('orders.view.cart.checkout');
 
     Route::post('/cart/{itemId}', 'removeItemFromCart')->name('orders.delete.cart_item');
+    Route::post('/cart/checkout/place-order', 'placeOrder')->name('orders.cart.place-order');
 })->middleware(SessionAuth::class);
 
 Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
