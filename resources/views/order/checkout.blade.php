@@ -9,9 +9,7 @@
 </head>
 
 <body>
-    <header>
-        <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" :cart-items-count="$cartItemsCount" />
-    </header>
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" :cart-items-count="$cartItemsCount" />
     <main>
         <div class="container-fluid p-3">
             <form action="" method="post">

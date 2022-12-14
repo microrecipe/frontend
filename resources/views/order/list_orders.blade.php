@@ -11,9 +11,7 @@
 </head>
 
 <body>
-    <header>
-        <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" />
-    </header>
+    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" />
     <main>
         <div class="container">
             @if (count($orders) > 0)

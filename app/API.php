@@ -120,6 +120,22 @@ class Api
     return $apiResponse->json();
   }
 
+  public function removeItemFromCart(Request $request, $itemId)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->delete($this->orderBaseUrl . "/carts" . "/" . $itemId);
+
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->removeItemFromCart($request, $itemId);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
   // Recipe API
 
   public function listRecipes()

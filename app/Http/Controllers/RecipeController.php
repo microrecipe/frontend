@@ -113,21 +113,7 @@ class RecipeController extends Controller
 
             $api->addIngredientsToCart($request, $recipeId);
 
-            $recipes = $api->listRecipes();
-            $itemsInCart = 0;
-
-            if (!is_null($this->getAccessToken($request))) {
-                try {
-                    $itemsInCart = $api->countItemsIncart($request);
-                } catch (UnauthorizedException $err) {
-                    return redirect()->route('auth.view.signin');
-                } catch (\Exception $e) {
-                    Log::debug($e);
-                    abort($e->getCode());
-                }
-            }
-
-            return redirect('/main/recipes')->with(['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => 'success']);
+            return redirect(route('recipes.view.recipes'))->with(['addToCartAlert' => 'success']);
         } catch (UnauthorizedException $err) {
             return redirect()->route('auth.view.signin');
         } catch (\Exception $e) {

@@ -32,7 +32,7 @@ class OrderController extends Controller
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
-      Log::debug($e->getMessage());
+      Log::debug($e);
       abort($e->getCode());
     }
   }
@@ -48,11 +48,11 @@ class OrderController extends Controller
         return $a + ($b['price'] * $b['quantity']);
       }, 0);
 
-      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice]);
+      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice, 'deleteItemAlert' => $request->session()->get('deleteItemAlert', null)]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
-      Log::debug($e->getMessage());
+      Log::debug($e);
       abort($e->getCode());
     }
   }
@@ -68,7 +68,23 @@ class OrderController extends Controller
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
-      Log::debug($e->getMessage());
+      Log::debug($e);
+      abort($e->getCode());
+    }
+  }
+
+  public function removeItemFromCart(Request $request, $itemId)
+  {
+    try {
+      $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+      $api->removeItemFromCart($request, $itemId);
+
+      return redirect(route('orders.view.cart'))->with(['deleteItemAlert' => 'success']);
+    } catch (UnauthorizedException $th) {
+      return redirect()->route('auth.view.signin');
+    } catch (\Exception $e) {
+      Log::debug($e);
       abort($e->getCode());
     }
   }

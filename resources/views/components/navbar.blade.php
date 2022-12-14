@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href={{ env('FRONTEND_APP_URL') }}>Microrecipe</a>
 

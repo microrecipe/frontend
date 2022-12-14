@@ -37,6 +37,8 @@ Route::controller(OrderController::class)->prefix('/user/orders')->group(functio
     Route::get('', 'index')->name('orders.view.orders');
     Route::get('/cart', 'listItemsInCart')->name('orders.view.cart');
     Route::get('/cart/checkout', 'checkout')->name('orders.view.cart.checkout');
+
+    Route::post('/cart/{itemId}', 'removeItemFromCart')->name('orders.delete.cart_item');
 })->middleware(SessionAuth::class);
 
 Route::controller(RecipeController::class)->prefix('/main/recipes')->group(function () {
