@@ -21,7 +21,6 @@
             @if (session()->get('access_token'))
                 @if (!session()->get('is_admin'))
                     <a href={{ route('orders.view.cart') }} class="btn btn-success me-3 position-relative">
-
                         @if ($cartItemsCount > 0)
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-cart-fill" viewBox="0 0 16 16">

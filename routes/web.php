@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Middleware\AdminSessionAuth;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,9 @@ Route::controller(RecipeController::class)->prefix('/main/recipes')->group(funct
 
 Route::controller(IngredientController::class)->prefix('/main/ingredients')->group(function () {
     Route::get('', 'index')->name('ingredients.view.list_ingredients');
+    Route::get('/add', 'viewAddIngredient')->name('ingredients.view.add_ingredient');
+
+    Route::post('/add', 'addIngredient')->name('ingredients.add_ingredient');
 });
 
 // Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');

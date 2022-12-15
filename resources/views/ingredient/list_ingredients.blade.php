@@ -25,7 +25,8 @@
             @if (session()->get('is_admin'))
                 <div class="d-flex justify-content-between m-3">
                     <div class=""></div>
-                    <a href="" class="btn btn-outline-primary align-items-center text-center">
+                    <a href="{{ route('ingredients.view.add_ingredient') }}"
+                        class="btn btn-outline-primary align-items-center text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                             <path

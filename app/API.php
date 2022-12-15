@@ -54,6 +54,7 @@ class Api
 
       $request->session()->forget('access_token');
       $request->session()->forget('refresh_token');
+      $request->session()->forget('is_admin');
       throw new UnauthorizedException('error');
     }
 
@@ -74,19 +75,19 @@ class Api
 
   public function listOrder(Request $request)
   {
-    $orders = Http::withToken($this->accessToken)->get($this->orderBaseUrl . "/");
+    $apiResponse = Http::withToken($this->accessToken)->get($this->orderBaseUrl . "/");
 
-    if ($orders->failed()) {
-      if ($orders->json('message') == 'Token expired') {
+    if ($apiResponse->failed()) {
+      if ($apiResponse->json('message') == 'Token expired') {
         $this->refreshAccessToken($request);
         return $this->listOrder($request);
       } else {
-        Log::debug($orders->json('message'));
+        Log::debug($apiResponse->json('message'));
         exit;
       }
     }
 
-    return $orders;
+    return $apiResponse;
   }
 
   public function listItemsInCart(Request $request)
@@ -173,11 +174,11 @@ class Api
 
   public function listRecipes()
   {
-    $recipes = Http::get($this->recipeBaseUrl);
+    $apiResponse = Http::get($this->recipeBaseUrl);
 
-    abort_if($recipes->failed(), $recipes->status());
+    abort_if($apiResponse->failed(), $apiResponse->status());
 
-    return $recipes->json();
+    return $apiResponse->json();
   }
 
   public function addRecipe(Request $request, $name, $ingredients)
@@ -203,11 +204,44 @@ class Api
 
   public function listIngredients()
   {
-    $ingredients = Http::get($this->ingredientBaseUrl);
+    $apiResponse = Http::get($this->ingredientBaseUrl);
 
-    abort_if($ingredients->failed(), $ingredients->status());
+    abort_if($apiResponse->failed(), $apiResponse->status());
 
-    return $ingredients->json();
+    return $apiResponse->json();
+  }
+
+  public function addIngredient(Request $request, $name, $unit, $price, $nutritions)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->post($this->ingredientBaseUrl, [
+      'name' => $name,
+      'unit' => $unit,
+      'price' => $price,
+      'nutritions' => $nutritions
+    ]);
+
+    if ($apiResponse->failed()) {
+      Log::debug($apiResponse->json());
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->addIngredient($request, $name, $unit, $price, $nutritions);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
+  // Nutrition API
+
+  public function listNutritions()
+  {
+    $apiResponse = Http::get($this->nutritionBaseUrl);
+
+    abort_if($apiResponse->failed(), $apiResponse->status());
+
+    return $apiResponse->json();
   }
 
   // Delivery API
