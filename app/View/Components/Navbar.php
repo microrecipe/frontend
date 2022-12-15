@@ -2,13 +2,10 @@
 
 namespace App\View\Components;
 
-use App\Api;
 use Illuminate\View\Component;
 
 class Navbar extends Component
 {
-    private $accessToken;
-    private $refreshToken;
     private $activePage;
     private $cartItemsCount;
     /**
@@ -16,10 +13,8 @@ class Navbar extends Component
      *
      * @return void
      */
-    public function __construct(string $accessToken = null, string $refreshToken = null, string $activePage = null, int $cartItemsCount = 0)
+    public function __construct(string $activePage = null, int $cartItemsCount = 0)
     {
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
         $this->activePage = $activePage;
         $this->cartItemsCount = $cartItemsCount;
     }
@@ -31,8 +26,6 @@ class Navbar extends Component
      */
     public function render()
     {
-        $api = new Api($this->accessToken, $this->refreshToken);
-
-        return view('components.navbar', ['isLoggedIn' => !is_null($this->accessToken), 'activePage' => $this->activePage, 'cartItemsCount' => $this->cartItemsCount]);
+        return view('components.navbar', ['activePage' => $this->activePage, 'cartItemsCount' => $this->cartItemsCount]);
     }
 }

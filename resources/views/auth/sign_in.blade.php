@@ -24,14 +24,30 @@
                         @csrf
                         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
                         <div class="form-floating mb-5">
-                            <input type="email" id="inputEmail" name="email" class="form-control "
+                            <input type="email" id="inputEmail" name="email"
+                                class="form-control @error('email')
+                            is-invalid
+                            @enderror"
                                 placeholder="Email address" required autofocus>
                             <label for="inputEmail" class="sr-only">Email address</label>
+                            @error('email')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="form-floating mb-5">
-                            <input type="password" id="inputPassword" name="password" class="form-control"
+                            <input type="password" id="inputPassword" name="password"
+                                class="form-control @error('password')
+                            is-invalid
+                            @enderror"
                                 placeholder="Password" required>
                             <label for="inputPassword" class="sr-only">Password</label>
+                            @error('password')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <button class="btn btn-lg w-100 btn-primary btn-block" type="submit">Sign in</button>
                     </form>

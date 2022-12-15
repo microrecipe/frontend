@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" :cart-items-count="$cartItemsCount" />
+    <x-navbar :cart-items-count="$cartItemsCount" />
     <main>
         <div class="container-fluid p-3">
             <form action={{ route('orders.cart.place-order') }} method="POST">

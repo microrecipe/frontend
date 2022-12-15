@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" :cart-items-count="$cartItemsCount" />
+    <x-navbar :cart-items-count="$cartItemsCount" />
     <main>
         <div class="{{ count($cartItems) > 0 ? 'container-fluid p-3' : 'container p-3 vh-100' }}">
             @if (!is_null($deleteItemAlert))

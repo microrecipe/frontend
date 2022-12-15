@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <x-navbar :access-token="$accessToken" :refresh-token="$refreshToken" active-page="recipe" :cart-items-count="$cartItemsCount" />
+    <x-navbar active-page="recipe" :cart-items-count="$cartItemsCount" />
     <main>
         <div class="container-fluid p-3">
             @if (!is_null($addToCartAlert))
@@ -24,7 +24,7 @@
                     </div>
                 @endif
             @endif
-            @if (!is_null($accessToken))
+            @if (session()->get('access_token'))
                 <div class="d-flex justify-content-between m-3">
                     <div class=""></div>
                     <a href={{ route('recipes.view.add_recipe') }}
@@ -94,13 +94,15 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                                @if (!is_null($accessToken))
-                                    <form class="mx-auto w-50 mt-3" method="POST"
-                                        action={{ route('recipes.add_to_cart', ['recipeId' => $recipe['id']]) }}>
-                                        @csrf
-                                        <button class="btn btn-success w-100" type="submit">Add ingredients to
-                                            cart</button>
-                                    </form>
+                                @if (session()->get('access_token'))
+                                    @if (!session()->get('is_admin'))
+                                        <form class="mx-auto w-50 mt-3" method="POST"
+                                            action={{ route('recipes.add_to_cart', ['recipeId' => $recipe['id']]) }}>
+                                            @csrf
+                                            <button class="btn btn-success w-100" type="submit">Add ingredients to
+                                                cart</button>
+                                        </form>
+                                    @endif
                                 @endif
                             </div>
                         </div>

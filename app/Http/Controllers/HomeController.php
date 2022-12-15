@@ -35,6 +35,6 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart]);
+        return view('home', ['cartItemsCount' => $itemsInCart]);
     }
 }

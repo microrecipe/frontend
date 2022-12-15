@@ -9,31 +9,16 @@ use Illuminate\Validation\UnauthorizedException;
 
 class RecipeController extends Controller
 {
-    /**
-     * Summary of getAccessToken
-     * @param Request $request
-     * @return string|null
-     */
     private function getAccessToken(Request $request)
     {
         return $request->session()->get('access_token', null);
     }
 
-    /**
-     * Summary of getRefreshToken
-     * @param Request $request
-     * @return string|null
-     */
     private function getRefreshToken(Request $request)
     {
         return $request->session()->get('refresh_token', null);
     }
 
-    /**
-     * Summary of index
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function index(Request $request)
     {
         $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
@@ -52,7 +37,7 @@ class RecipeController extends Controller
             }
         }
 
-        return view('recipe.list_recipes', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => session('addToCartAlert', null)]);
+        return view('recipe.list_recipes', ['recipes' => $recipes, 'cartItemsCount' => $itemsInCart, 'addToCartAlert' => session('addToCartAlert', null)]);
     }
 
     public function viewAddRecipe(Request $request)
@@ -63,7 +48,7 @@ class RecipeController extends Controller
             $ingredients = $api->listIngredients();
             $itemsInCart = $api->countItemsIncart($request);
 
-            return view('recipe.add_recipe', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'ingredients' => $ingredients, 'noIngredientSelected' => false, 'cartItemsCount' => $itemsInCart]);
+            return view('recipe.add_recipe', ['ingredients' => $ingredients, 'noIngredientSelected' => false, 'cartItemsCount' => $itemsInCart]);
         } catch (UnauthorizedException $err) {
             return redirect()->route('auth.view.signin');
         } catch (\Exception $e) {
@@ -92,7 +77,7 @@ class RecipeController extends Controller
             if (count($ingredientsInput) < 1) {
                 $ingredients = $api->listIngredients();
 
-                return view('recipe.add_recipe', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'ingredients' => $ingredients, 'noIngredientSelected' => true]);
+                return view('recipe.add_recipe', ['ingredients' => $ingredients, 'noIngredientSelected' => true]);
             }
 
             $api->addRecipe($request, $name, $ingredientsInput);

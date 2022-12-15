@@ -28,7 +28,7 @@ class OrderController extends Controller
       $orders = $api->listOrder($request);
       $itemsInCart = $api->countItemsIncart($request);
 
-      return view('order.list_orders', ['orders' => $orders->json(), 'accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart]);
+      return view('order.list_orders', ['orders' => $orders->json(), 'cartItemsCount' => $itemsInCart]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
@@ -48,7 +48,7 @@ class OrderController extends Controller
         return $a + ($b['price'] * $b['quantity']);
       }, 0);
 
-      return view('order.cart', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice, 'deleteItemAlert' => $request->session()->get('deleteItemAlert', null)]);
+      return view('order.cart', ['cartItemsCount' => $itemsInCart, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice, 'deleteItemAlert' => $request->session()->get('deleteItemAlert', null)]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {
@@ -66,7 +66,7 @@ class OrderController extends Controller
       $deliveryCouriers = $api->listDeliveryCouriers();
       $paymentMethods = $api->listPaymentMethods();
 
-      return view('order.checkout', ['accessToken' => $this->getAccessToken($request), 'refreshToken' => $this->getRefreshToken($request), 'cartItemsCount' => $itemsInCart, 'deliveryCouriers' => $deliveryCouriers, 'paymentMethods' => $paymentMethods]);
+      return view('order.checkout', ['cartItemsCount' => $itemsInCart, 'deliveryCouriers' => $deliveryCouriers, 'paymentMethods' => $paymentMethods]);
     } catch (UnauthorizedException $th) {
       return redirect()->route('auth.view.signin');
     } catch (\Exception $e) {

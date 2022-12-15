@@ -2,50 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Api;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
     public function index()
     {
-        return view('auth/sign_in', ['loginError' => false]);
+        return view('auth.sign_in', ['loginError' => false]);
     }
-    /**
-     * Summary of signIn
-     * @param Request $request
-     * @return mixed
-     */
     public function signIn(Request $request)
     {
+        $request->validate([
+            'email' => ['email', 'required'],
+            'password' => ['required', 'min:8']
+        ]);
+
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $authServiceResponse = Http::post("http://" . env('AUTH_HOST', 'auth') . ":" . env('AUTH_REST_PORT', '80') . "/auth/sign-in", [
-            'email' => $email,
-            'password' => $password
-        ]);
+        $api = new Api();
 
-        if ($authServiceResponse->clientError()) {
-            return view('auth.sign_in', ['loginError' => $authServiceResponse->json('message')]);
-        }
+        $user = $api->signIn($email, $password);
 
-        $request->session()->put('access_token', $authServiceResponse->json('access_token'));
-        $request->session()->put('refresh_token', $authServiceResponse->json('refresh_token'));
-
-        // auth('api')->login(auth('api')->setToken($response->json('access_token'))->user());
+        $request->session()->put('access_token', $user['access_token']);
+        $request->session()->put('refresh_token', $user['refresh_token']);
+        $request->session()->put('is_admin', $user['user']['is_admin']);
 
         return redirect()->route('home');
     }
 
-    /**
-     * Summary of signOut
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
     public function signOut(Request $request)
     {
         $request->session()->forget('access_token');
+        $request->session()->forget('refresh_token');
+        $request->session()->forget('is_admin');
 
         return redirect()->route('home');
     }

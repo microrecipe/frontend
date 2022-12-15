@@ -27,7 +27,7 @@ class Api
 
   private $deliveryBaseUrl;
 
-  public function __construct($accessToken, $refreshToken)
+  public function __construct($accessToken = null, $refreshToken = null)
   {
     $this->accessToken = $accessToken;
     $this->refreshToken = $refreshToken;
@@ -39,6 +39,8 @@ class Api
     $this->paymentBaseUrl = "http://" . env('PAYMENT_HOST', 'payment') . ":" . env('PAYMENT_REST_PORT', '80') . "/payments";
     $this->deliveryBaseUrl = "http://" . env('DELIVERY_HOST', 'delivery') . ":" . env('DELIVERY_REST_PORT', '80') . "/deliveries";
   }
+
+  // Auth API
 
   private function refreshAccessToken(Request $request)
   {
@@ -57,6 +59,15 @@ class Api
 
     $request->session()->put('access_token', $refresh->json('access_token'));
     $this->accessToken = $refresh->json('access_token');
+  }
+
+  public function signIn($email, $password)
+  {
+    $apiResponse = Http::post($this->authBaseUrl . "/sign-in", ['email' => $email, 'password' => $password]);
+
+    abort_if($apiResponse->failed(), $apiResponse->status());
+
+    return $apiResponse->json();
   }
 
   // Orders API
