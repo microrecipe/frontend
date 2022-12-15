@@ -8,16 +8,13 @@
                     <a class="nav-link {{ $activePage === 'recipe' ? 'active' : '' }}"
                         href={{ route('recipes.view.recipes') }}>Recipes</a>
                 </li>
-                @if (session()->get('is_admin'))
-                    <li class="nav-item">
-                        <a class="nav-link {{ $activePage === 'ingredient' ? 'active' : '' }}"
-                            href="">Ingredients</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ $activePage === 'nutrition' ? 'active' : '' }}"
-                            href="">Nutritions</a>
-                    </li>
-                @endif
+                <li class="nav-item">
+                    <a class="nav-link {{ $activePage === 'ingredient' ? 'active' : '' }}"
+                        href="{{ route('ingredients.view.list_ingredients') }}">Ingredients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $activePage === 'nutrition' ? 'active' : '' }}" href="">Nutritions</a>
+                </li>
             </ul>
         </div>
         <div class="">

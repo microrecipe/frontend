@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Middleware\SessionAuth;
@@ -28,9 +29,9 @@ Route::controller(HomeController::class)->prefix('/')->group(function () {
 
 Route::controller(AuthController::class)->prefix('/user')->group(function () {
     Route::get('/sign-in', 'index')->name('auth.view.signin');
+    Route::get('/sign-out', 'signOut')->name(('auth.signout'));
 
     Route::post('/sign-in', 'signIn')->name('auth.signin');
-    Route::get('/sign-out', 'signOut')->name(('auth.signout'));
 });
 
 Route::controller(OrderController::class)->prefix('/user/orders')->group(function () {
@@ -48,6 +49,10 @@ Route::controller(RecipeController::class)->prefix('/main/recipes')->group(funct
 
     Route::post('/add', 'addRecipe')->name('recipes.add_recipe')->middleware(SessionAuth::class);
     Route::post('/add-to-cart/{recipeId}', 'addIngredientsToCart')->name('recipes.add_to_cart')->middleware(SessionAuth::class);
+});
+
+Route::controller(IngredientController::class)->prefix('/main/ingredients')->group(function () {
+    Route::get('', 'index')->name('ingredients.view.list_ingredients');
 });
 
 // Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');
