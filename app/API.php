@@ -233,6 +233,23 @@ class Api
     return $apiResponse->json();
   }
 
+  public function deleteIngredient(Request $request, $ingredientId)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->delete($this->ingredientBaseUrl . "/" . $ingredientId);
+
+    if ($apiResponse->failed()) {
+      Log::debug($apiResponse->json());
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->deleteIngredient($request, $ingredientId);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
   // Nutrition API
 
   public function listNutritions()

@@ -54,9 +54,17 @@ Route::controller(RecipeController::class)->prefix('/main/recipes')->group(funct
 
 Route::controller(IngredientController::class)->prefix('/main/ingredients')->group(function () {
     Route::get('', 'index')->name('ingredients.view.list_ingredients');
-    Route::get('/add', 'viewAddIngredient')->name('ingredients.view.add_ingredient');
 
-    Route::post('/add', 'addIngredient')->name('ingredients.add_ingredient');
+    Route::middleware(AdminSessionAuth::class)->group(
+        function () {
+            Route::get('/add', 'viewAddIngredient')->name('ingredients.view.add_ingredient');
+
+            Route::post('/add', 'addIngredient')->name('ingredients.add_ingredient');
+            Route::post('/delete/{ingredientId}', 'deleteIngredient')->name('ingredients.delete_ingredient');
+        }
+    );
+
+
 });
 
 // Route::get('/user/orders', [OrderController::class, 'index'])->middleware(SessionAuth::class)->name('orders.view.orders');

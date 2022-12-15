@@ -97,4 +97,25 @@ class IngredientController extends Controller
             abort($e->getCode());
         }
     }
+
+    public function deleteIngredient(Request $request, $ingredientId)
+    {
+        try {
+            $api = new Api($this->getAccessToken($request), $this->getRefreshToken($request));
+
+            $api->deleteIngredient($request, $ingredientId);
+
+            return redirect(route('ingredients.view.list_ingredients'))->with([
+                'alert' => [
+                    'type' => 'success',
+                    'message' => 'Ingredient deleted.'
+                ]
+            ]);
+        } catch (UnauthorizedException $th) {
+            return redirect()->route('auth.view.signin');
+        } catch (\Exception $e) {
+            Log::debug($e);
+            abort($e->getCode());
+        }
+    }
 }

@@ -58,7 +58,9 @@
                                                     </svg>
                                                 </button>
                                             </form>
-                                            <form action="" method="POST">
+                                            <form
+                                                action="{{ route('ingredients.delete_ingredient', ['ingredientId' => $ingredient['id']]) }}"
+                                                method="POST">
                                                 @csrf
                                                 <button class="btn btn-outline-danger" type="submit">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16"
