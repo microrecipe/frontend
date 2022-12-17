@@ -233,6 +233,37 @@ class Api
     return $apiResponse->json();
   }
 
+  public function getIngredientById(Request $request, $id)
+  {
+    $apiResponse = Http::get($this->ingredientBaseUrl . "/" . $id);
+
+    abort_if($apiResponse->failed(), $apiResponse->status(), $apiResponse->json('message', 'Server error'));
+
+    return $apiResponse->json();
+  }
+
+  public function updateIngredient(Request $request, $id, $name, $unit, $price, $nutritions)
+  {
+    $apiResponse = Http::withToken($this->accessToken)->put($this->ingredientBaseUrl . "/" . $id, [
+      'name' => $name,
+      'unit' => $unit,
+      'price' => $price,
+      'nutritions' => $nutritions
+    ]);
+
+    if ($apiResponse->failed()) {
+      Log::debug($apiResponse->json());
+      if ($apiResponse->json('message') == 'Token expired') {
+        $this->refreshAccessToken($request);
+        return $this->addIngredient($request, $name, $unit, $price, $nutritions);
+      } else {
+        abort($apiResponse->failed(), $apiResponse->status());
+      }
+    }
+
+    return $apiResponse->json();
+  }
+
   public function deleteIngredient(Request $request, $ingredientId)
   {
     $apiResponse = Http::withToken($this->accessToken)->delete($this->ingredientBaseUrl . "/" . $ingredientId);

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <x-head />
-    <title>Add Ingredient</title>
+    <title>{{ $context === 'edit' ? 'Edit' : 'Add' }} Ingredient</title>
 </head>
 
 <body>
@@ -21,7 +21,9 @@
                     </button>
                 </div>
             @endif
-            <form action="{{ route('ingredients.add_ingredient') }}" method="POST">
+            <form
+                action="{{ $context === 'edit' ? route('ingredients.edit_ingredient', ['ingredientId' => $ingredient['id']]) : route('ingredients.add_ingredient') }}"
+                method="POST">
                 @csrf
                 <div class="d-flex flex-column justify-content-center">
                     <div class="mb-3">
@@ -30,7 +32,7 @@
                             class="form-control @error('name')
                         form-invalid
                     @enderror required"
-                            required value="{{ old('name') }}">
+                            required value="{{ !is_null($ingredient) ? $ingredient['name'] : old('name') }}">
                     </div>
                     <div class="mb-3">
                         <label for="unit" class="form-label">Unit: </label>
@@ -38,7 +40,7 @@
                             class="form-control @error('unit')
                         form-invalid
                     @enderror required"
-                            required value="{{ old('unit') }}">
+                            required value="{{ !is_null($ingredient) ? $ingredient['unit'] : old('unit') }}">
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price: </label>
@@ -46,7 +48,7 @@
                             class="form-control @error('price')
                         form-invalid
                     @enderror required"
-                            required value="{{ old('price') }}">
+                            required value="{{ !is_null($ingredient) ? $ingredient['price'] : old('price') }}">
                     </div>
                     <label for="" class="mb-3">Nutritions: </label>
                     <div class="card mb-3">
@@ -57,8 +59,9 @@
                                         <p class="">{{ $nutrition['name'] }}</p>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" name={{ $nutrition['id'] }}
-                                            id={{ $nutrition['id'] }} placeholder="Amount (Per gram)">
+                                        <input type="text" class="form-control" name="{{ $nutrition['id'] }}"
+                                            id="{{ $nutrition['id'] }}" placeholder="Amount (Per gram)"
+                                            value="{{ !is_null($prevNutritions) ? array_search($nutrition['id'], $prevNutritions) : old($nutrition['id']) }}">
                                     </div>
                                 </div>
                             @endforeach
@@ -67,7 +70,15 @@
                     <div class="d-flex justify-content-between">
                         <div></div>
                         <button class="btn btn-primary" type="submit">
-                            Add ingredient
+                            @switch($context)
+                                @case('edit')
+                                    Update ingredient
+                                @break
+
+                                @default
+                                    Add ingredient
+                                @break
+                            @endswitch
                         </button>
                     </div>
                 </div>

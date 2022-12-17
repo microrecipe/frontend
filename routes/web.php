@@ -7,7 +7,6 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Middleware\AdminSessionAuth;
 use App\Http\Middleware\SessionAuth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
@@ -58,9 +57,11 @@ Route::controller(IngredientController::class)->prefix('/main/ingredients')->gro
     Route::middleware(AdminSessionAuth::class)->group(
         function () {
             Route::get('/add', 'viewAddIngredient')->name('ingredients.view.add_ingredient');
+            Route::get('/edit/{ingredientId}', 'viewEditIngredient')->name('ingredients.view.edit_ingredient');
 
             Route::post('/add', 'addIngredient')->name('ingredients.add_ingredient');
             Route::post('/delete/{ingredientId}', 'deleteIngredient')->name('ingredients.delete_ingredient');
+            Route::post('/edit/{ingredientId}', 'editIngredient')->name('ingredients.edit_ingredient');
         }
     );
 
